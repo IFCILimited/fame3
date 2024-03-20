@@ -69,7 +69,7 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        // dd($data,$data['Name']);
+        // dd($data,$data['Person']);
     
             
             $oemType = OemType::where("type", $data['oem_type'])->first();
@@ -93,6 +93,7 @@ class RegisterController extends Controller
 
             return User::create([
                 'name' => $data['Name'],
+                'contact_person' => $data['Person'],
                 'email' => $data['Mail'],
                 'mobile'=>$data['Mobile'],
                 'password' => Null,
@@ -134,7 +135,7 @@ class RegisterController extends Controller
     protected function registered(Request $request, $user)
     {
         $user->assignRole('OEM');
-        return redirect()->route('logout')
+        return redirect()->route('logout');
 
         // return redirect()->route('test');
 

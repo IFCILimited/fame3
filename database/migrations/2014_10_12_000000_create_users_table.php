@@ -17,8 +17,9 @@ class CreateUsersTable extends Migration
             $table->id(); // This defines the primary key
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('contact_person');
             $table->timestamp('email_verified_at')->nullable();
-            $table->integer('mobile'); // Remove the primary() method
+            $table->bigInteger('mobile'); // Remove the primary() method
             $table->timestamp('mobile_verified_at')->nullable();
             $table->string('username')->unique();
             $table->string('password')->nullable();
@@ -34,7 +35,7 @@ class CreateUsersTable extends Migration
             $table->string('city');
             $table->string('fax')->nullable();
             $table->string('registration_no');
-            $table->string('registration_certificate_upload_id');
+            $table->string('registration_certificate_upload_id')->nullable();;
             $table->timestamps();
 
         });
