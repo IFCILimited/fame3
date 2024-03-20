@@ -13,10 +13,16 @@ class HomeController extends Controller
     {
         return view('landing.index');
     }
-    public function test(){
-        Auth::logout();
 
-    // Redirect to a desired location after logout
-    return redirect('/login');
+    public function signin($roleid) {
+        $role_id = decrypt($roleid);
+        session(['role_id' => $role_id]);
+        return redirect()->route('login');
     }
+    public function logout(){
+        Auth::logout();
+        return redirect()->route('home');
+    }
+    
+    
 }

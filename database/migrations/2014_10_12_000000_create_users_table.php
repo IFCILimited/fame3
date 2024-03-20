@@ -21,11 +21,20 @@ class CreateUsersTable extends Migration
             $table->integer('mobile'); // Remove the primary() method
             $table->timestamp('mobile_verified_at')->nullable();
             $table->string('username')->unique();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->rememberToken();
             $table->char('isotpverified', 1);
             $table->char('isactive', 1);
             $table->char('isapproved', 1);
+            $table->integer('type');
+            $table->string('address');
+            $table->integer('pincode');
+            $table->string('state');
+            $table->string('district');
+            $table->string('city');
+            $table->string('fax')->nullable();
+            $table->string('registration_no');
+            $table->string('registration_certificate_upload_id');
             $table->timestamps();
 
         });

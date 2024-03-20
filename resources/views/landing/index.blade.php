@@ -72,16 +72,16 @@
                      <div class="row">
                  
                         <div class="col-12">
-                           <a href="{{route('login')}}" class="btn btn-prim-round mt-4" ><i class=""></i> NAB/MHI</a>
+                           <a href="{{route('signin',encrypt(1))}}" class="btn btn-prim-round mt-4" ><i class=""></i> NAB/MHI</a>
                         </div>
                         <div class="col-12">
-                           <a href="{{route('login')}}" class="btn btn-prim-round mt-4" >OEM</a>
+                           <a href="{{route('signin',encrypt(2))}}" class="btn btn-prim-round mt-4" >OEM</a>
                         </div>
                         <div class="col-12">
-                           <a href="{{route('login')}}" class="btn btn-prim-round mt-4" >Dealers</a>
+                           <a href="{{route('signin',encrypt(3))}}" class="btn btn-prim-round mt-4" >Dealers</a>
                         </div>
                         <div class="col-12">
-                           <a href="{{route('login')}}" class="btn btn-prim-round mt-4" >Testing Agency</a>
+                           <a href="{{route('signin',encrypt(4))}}" class="btn btn-prim-round mt-4" >Testing Agency</a>
                         </div>
                         
                       

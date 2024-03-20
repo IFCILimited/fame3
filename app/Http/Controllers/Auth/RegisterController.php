@@ -5,10 +5,16 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\User;
+use App\DocumentUpload;
+use App\OEMType;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\PreRegisterRequest;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+
+use Log;
 
 class RegisterController extends Controller
 {
@@ -30,6 +36,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
+    // protected $redirectTo = RouteServiceProvider::HOME;
     protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
@@ -50,11 +57,8 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+        //   dd($data);
+        return Validator::make($data, (new PreRegisterRequest())->rules());
     }
 
     /**
@@ -65,17 +69,50 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        //  dd($data,$data['mobile']);
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'mobile' => $data['mobile'],
-            'password' => Hash::make($data['password']),
-            'username' => $this->generateUsername($data['name'],  $data['mobile']),
-            'isactive' => 'Y',
-            'isotpverified' => 0,
-            'isapproved' => 'N',
-        ]);
+        // dd($data,$data['Name']);
+    
+            
+            $oemType = OemType::where("type", $data['oem_type'])->first();
+            // dd($oemType);
+
+            // $registrationFile = $data['Registration_file'];
+           
+            // $fileName = $registrationFile->getClientOriginalName();
+            // $mime = $registrationFile->getMimeType();
+            // $fileSize = $registrationFile->getSize();
+            // $fileContent = file_get_contents($registrationFile->getRealPath());
+            
+            // // dd($fileSize);
+            // $documentUpload = new DocumentUpload();
+            // $documentUpload->file_name = $fileName;
+            // $documentUpload->mime = $mime;
+            // $documentUpload->file_size = $fileSize;
+            // $documentUpload->uploaded_file = $fileContent;
+            // $documentUpload->save();
+            // dd( $documentUpload);
+
+            return User::create([
+                'name' => $data['Name'],
+                'email' => $data['Mail'],
+                'mobile'=>$data['Mobile'],
+                'password' => Null,
+                // 'password' => Hash::make($data['password']),
+                'username' => $this->generateUsername($data['Name'], $data['Mobile']),
+                'isactive' => 'Y',
+                'isotpverified' => 0,
+                'isapproved' => 'N',
+                'type' => $oemType->id,
+                'address' => $data['Address'],
+                'pincode' => $data['Pincode'],
+                'state' => $data['State'],
+                'district' => $data['District'],
+                'city' => $data['City'],
+                'fax' => $data['Fax'],
+                'registration_no' => $data['Registration'],
+                // 'registration_certificate_upload_id' => $documentUpload->id
+                'registration_certificate_upload_id' => Null
+            ]);
+
     }
 
     private function generateUsername($name, $mobile)
@@ -85,7 +122,7 @@ class RegisterController extends Controller
 
         // Check if the username already exists
         $count = User::where('username', $username)->count();
-        
+
         // If the username already exists, append the primary key to make it unique
         if ($count > 0) {
             $username .= '_' . (User::max('id') + 1); // Append the primary key
@@ -97,7 +134,8 @@ class RegisterController extends Controller
     protected function registered(Request $request, $user)
     {
         $user->assignRole('OEM');
-        return redirect()->route('oem.index')->with('success', 'Registration successful. Please login.');
+        return redirect()->route('logout')
+
         // return redirect()->route('test');
 
         // try {

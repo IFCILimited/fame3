@@ -22,5 +22,12 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');
-Route::get('test', 'HomeController@test')->name('test');
-Route::resource('oem', 'OEM\OEMHomeController');
+Route::get('logout', 'HomeController@logout')->name('logout');
+Route::get('signin/{roleid}', 'HomeController@signin')->name('signin');
+Route::get('admin/dashboard', 'Admin\AdminController@index')->name('admin.dashboard');
+Route::get('post_registration', 'Admin\AdminController@post_registration')->name('post_registration');
+Route::resource('ajax', 'AjaxController');
+Route::get('pincode/{pincode}', 'AjaxController@pincodedetail')->name('pincode');
+
+
+

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\User;
+use Auth;
 
 class LoginController extends Controller
 {
@@ -33,6 +34,9 @@ class LoginController extends Controller
      */
     // protected $redirectTo = RouteServiceProvider::HOME;
 
+    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $maxAttempts=1;
+    protected $decayMinutes=1;
     /**
      * Create a new controller instance.
      *
@@ -43,17 +47,19 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+   
+
     public function username()
     {
         $identity = request()->get('identity');
-        $fieldname = filter_var($identity, FILTER_VALIDATE_EMAIL) ? 'email' : 'pan';
+        $fieldname = filter_var($identity, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
         request()->merge([$fieldname => $identity]);
         return $fieldname;
     }
 
     protected function validateLogin(Request $request)
     {
-        dd($request);
+        // dd($request,$request->username,$request->password);
         $key = hex2bin("0123456789abcdef0123456789abcdef");
         $iv = hex2bin("abcdef9876543210abcdef9876543210");
 
@@ -66,14 +72,17 @@ class LoginController extends Controller
             'identity' => $decryptedId,
             'password' => $decryptedPwd,
         ]);
-        //  dd($request);
-        if ($this->username() == 'pan') {
+        //  dd($request,$this->username(),$this->username() == 'username');
+        if ($this->username() == 'username') {
+            // dd($request);
             $validator = Validator::make($request->all(), [
                 $this->username() => [
                     'required',
-                    'size:10',
+                    // 'size:10',
                     function ($attribute, $value, $fail) {
-                        $user = User::where('pan', $value)->first();
+                        // dd($value);
+                        $user = User::where('username', $value)->first();
+                        // dd($user);
                         if ($user && $user->isapproved == 'Y') {
                             return true;
                         }
@@ -83,41 +92,41 @@ class LoginController extends Controller
                 ],
                 'password' => 'required|string',
             ]);
+            // dd($validator);
 
             $validator->validate();
-        } elseif ($this->username() == 'email') {
-            $validator = Validator::make($request->all(), [
-                $this->username() => [
-                    'required',
-                    'email',
-                    function ($attribute, $value, $fail) {
-                        $user = User::where('email', $value)->first();
-                        if ($user && $user->hasRole(['Admin', 'Admin-Ministry']) && $user->isapproved == 'Y') {
-                            return true;
-                        }
+        } 
+        // elseif ($this->username() == 'email') {
+        //     $validator = Validator::make($request->all(), [
+        //         $this->username() => [
+        //             'required',
+        //             'email',
+        //             function ($attribute, $value, $fail) {
+        //                 $user = User::where('email', $value)->first();
+        //                 if ($user && $user->hasRole(['Admin', 'Admin-Ministry']) && $user->isapproved == 'Y') {
+        //                     return true;
+        //                 }
 
-                        return $fail('These credentials do not match our records.');
-                    },
-                ],
-                'password' => 'required|string',
-            ]);
+        //                 return $fail('These credentials do not match our records.');
+        //             },
+        //         ],
+        //         'password' => 'required|string',
+        //     ]);
 
-            $validator->validate();
-        }
+        //     $validator->validate();
+        // }
     }
     protected function authenticated($request)
     {
-        // dd($request);
+        // dd($request,Auth::user()->hasRole('OEM'));
         // logout from other divece
         Auth::logoutOtherDevices($request->password);
         //for dashoard
-        // auth()->user()->update(['isotpverified' => 0]);
-        // if (Auth::user()->hasRole('Admin') or Auth::user()->hasRole('Admin-Ministry')) {
-        //     return redirect()->route('admin.home');
-        //     // return redirect()->route('admin.dashboard.dashboard');
-        // }
+        auth()->user()->update(['isotpverified' => 0]);
+        if (Auth::user()->hasRole('OEM') or Auth::user()->hasRole('Admin-Ministry')) {
+            return redirect()->route('admin.dashboard');
+        }
 
-        // return redirect()->route('home');
-        return redirect()->route('test');
+        return redirect()->route('admin.dashboard');
     }
 }
