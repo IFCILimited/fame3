@@ -25,7 +25,10 @@ Route::get('/', 'HomeController@index')->name('home');
 Route::get('logout', 'HomeController@logout')->name('logout');
 Route::get('signin/{roleid}', 'HomeController@signin')->name('signin');
 Route::get('admin/dashboard', 'Admin\AdminController@index')->name('admin.dashboard');
-Route::get('post_registration', 'Admin\AdminController@post_registration')->name('post_registration');
+// Route::get('post_registration', 'Admin\AdminController@post_registration')->name('post_registration');
+Route::resource('oem', 'OEM\OEMPostController');
+// Route::get('post_registration', 'OEM\OEMPostController@create')->name('post_registration');
+Route::get('post_registration/{id}', 'OEM\OEMPostController@show')->name('post_registration');
 Route::resource('ajax', 'AjaxController');
 Route::get('pincode/{pincode}', 'AjaxController@pincodedetail')->name('pincode');
 

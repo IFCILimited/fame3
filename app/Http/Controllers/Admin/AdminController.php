@@ -10,7 +10,8 @@ class AdminController extends Controller
     public function index() {
         return view('admin.index');
     }
-    public function post_registration() {
-        return view('auth.post_register');
-    }
+    // public function post_registration() {
+    //     // dd($id);
+    //     return view('auth.post_register');
+    // }
 }
